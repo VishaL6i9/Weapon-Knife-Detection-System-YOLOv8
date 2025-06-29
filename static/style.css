@@ -1,0 +1,182 @@
+/* Additional custom styles for the Weapons Detection Web UI */
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}
+
+/* Animation for upload area */
+.upload-area {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Pulse animation for processing */
+.processing-pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Hover effects for cards */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Custom button styles */
+.btn-custom {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+    color: white;
+}
+
+/* Detection item animations */
+.detection-item {
+    animation: slideInRight 0.5s ease-out;
+    animation-fill-mode: both;
+}
+
+.detection-item:nth-child(1) { animation-delay: 0.1s; }
+.detection-item:nth-child(2) { animation-delay: 0.2s; }
+.detection-item:nth-child(3) { animation-delay: 0.3s; }
+.detection-item:nth-child(4) { animation-delay: 0.4s; }
+.detection-item:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Loading spinner for buttons */
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Responsive improvements */
+@media (max-width: 576px) {
+    .header-card {
+        padding: 2rem 1rem;
+    }
+    
+    .header-card h1 {
+        font-size: 1.8rem;
+    }
+    
+    .upload-area {
+        padding: 1.5rem 1rem;
+    }
+    
+    .upload-icon {
+        font-size: 2rem;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    }
+    
+    .card {
+        background: rgba(30, 30, 30, 0.95);
+        color: #ffffff;
+    }
+    
+    .upload-area {
+        background: rgba(40, 40, 40, 0.8);
+        border-color: #4a5568;
+    }
+    
+    .stat-card {
+        background: rgba(40, 40, 40, 0.8);
+        color: #ffffff;
+    }
+    
+    .detection-item {
+        background: rgba(40, 40, 40, 0.8);
+        color: #ffffff;
+    }
+}
+
+/* Print styles */
+@media print {
+    .upload-area,
+    .progress-container,
+    .btn {
+        display: none !important;
+    }
+    
+    .result-container {
+        display: block !important;
+    }
+} 

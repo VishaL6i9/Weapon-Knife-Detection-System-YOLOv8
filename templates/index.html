@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weapons & Knife Detection System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --success-color: #059669;
+            --danger-color: #dc2626;
+            --warning-color: #d97706;
+            --dark-color: #1f2937;
+            --light-color: #f8fafc;
+            --border-color: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark-color);
+        }
+
+        .main-container {
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .header-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .header-card h1 {
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .header-card p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .upload-area {
+            border: 3px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: var(--light-color);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .progress-container {
+            display: none;
+            margin: 2rem 0;
+        }
+
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+            background: var(--border-color);
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 4px;
+        }
+
+        .result-container {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .detection-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--light-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .detection-item {
+            background: var(--light-color);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .detection-item.weapon {
+            border-left-color: var(--danger-color);
+        }
+
+        .confidence-bar {
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-color), var(--warning-color));
+            transition: width 0.3s ease;
+        }
+
+        .media-container {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .media-container img,
+        .media-container video {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .alert {
+            border: none;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        @media (max-width: 768px) {
+            .header-card h1 {
+                font-size: 2rem;
+            }
+            
+            .upload-area {
+                padding: 2rem 1rem;
+            }
+            
+            .detection-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="container">
+            <!-- Header -->
+            <div class="header-card card">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1><i class="fas fa-shield-alt me-3"></i>Weapons & Knife Detection</h1>
+                        <p class="mb-0">Advanced AI-powered security system for real-time weapon detection in images and videos</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="d-none d-md-block">
+                            <i class="fas fa-robot fa-3x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <!-- Upload Card -->
+                    <div class="card">
+                        <div class="card-body p-4">
+                            <h4 class="card-title mb-4">
+                                <i class="fas fa-cloud-upload-alt me-2"></i>Upload Media
+                            </h4>
+                            
+                            <div class="upload-area" id="uploadArea">
+                                <div class="upload-icon">
+                                    <i class="fas fa-file-upload"></i>
+                                </div>
+                                <h5>Drag & Drop your file here</h5>
+                                <p class="text-muted mb-3">or click to browse</p>
+                                <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                                    <i class="fas fa-folder-open me-2"></i>Choose File
+                                </button>
+                                <input type="file" id="fileInput" class="file-input" accept="image/*,video/*">
+                                <div class="mt-3">
+                                    <small class="text-muted">
+                                        Supported formats: JPG, PNG, GIF, MP4, AVI, MOV (Max 16MB)
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Progress Bar -->
+                            <div class="progress-container" id="progressContainer">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Processing...</span>
+                                    <span id="progressText">0%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Alert Messages -->
+                            <div id="alertContainer"></div>
+                        </div>
+                    </div>
+
+                    <!-- Results Card -->
+                    <div class="result-container card" id="resultContainer">
+                        <div class="card-body p-4">
+                            <h4 class="card-title mb-4">
+                                <i class="fas fa-search me-2"></i>Detection Results
+                            </h4>
+                            
+                            <!-- Statistics -->
+                            <div class="detection-stats" id="detectionStats"></div>
+                            
+                            <!-- Detections List -->
+                            <div id="detectionsList"></div>
+                            
+                            <!-- Media Display -->
+                            <div class="media-container" id="mediaContainer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p>&copy; 2024 Weapons & Knife Detection System. Powered by YOLOv8 and AI.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Global variables
+        let isProcessing = false;
+
+        // DOM elements
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const resultContainer = document.getElementById('resultContainer');
+        const detectionStats = document.getElementById('detectionStats');
+        const detectionsList = document.getElementById('detectionsList');
+        const mediaContainer = document.getElementById('mediaContainer');
+        const alertContainer = document.getElementById('alertContainer');
+
+        // Event listeners
+        uploadArea.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', handleFileSelect);
+        
+        // Drag and drop events
+        uploadArea.addEventListener('dragover', handleDragOver);
+        uploadArea.addEventListener('dragleave', handleDragLeave);
+        uploadArea.addEventListener('drop', handleDrop);
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        }
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+
+        function handleFile(file) {
+            if (isProcessing) return;
+
+            // Validate file type
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'video/mp4', 'video/avi', 'video/mov', 'video/quicktime'];
+            if (!allowedTypes.includes(file.type)) {
+                showAlert('Please select a valid image or video file.', 'danger');
+                return;
+            }
+
+            // Validate file size (16MB)
+            if (file.size > 16 * 1024 * 1024) {
+                showAlert('File size must be less than 16MB.', 'danger');
+                return;
+            }
+
+            uploadFile(file);
+        }
+
+        function uploadFile(file) {
+            isProcessing = true;
+            
+            // Show progress
+            showProgress();
+            showAlert(`Processing ${file.name}...`, 'info');
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('file', file);
+
+            // Simulate progress (since we can't track actual progress easily)
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 90) progress = 90;
+                updateProgress(progress);
+            }, 200);
+
+            // Send request
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                clearInterval(progressInterval);
+                updateProgress(100);
+                
+                if (data.error) {
+                    showAlert(data.error, 'danger');
+                } else {
+                    showResults(data, file.type.startsWith('image/'));
+                }
+            })
+            .catch(error => {
+                clearInterval(progressInterval);
+                showAlert('An error occurred while processing the file.', 'danger');
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                isProcessing = false;
+                hideProgress();
+            });
+        }
+
+        function showProgress() {
+            progressContainer.style.display = 'block';
+            resultContainer.style.display = 'none';
+        }
+
+        function hideProgress() {
+            progressContainer.style.display = 'none';
+        }
+
+        function updateProgress(percent) {
+            progressBar.style.width = percent + '%';
+            progressText.textContent = Math.round(percent) + '%';
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            alertContainer.appendChild(alertDiv);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+
+        function showResults(data, isImage) {
+            // Clear previous results
+            detectionStats.innerHTML = '';
+            detectionsList.innerHTML = '';
+            mediaContainer.innerHTML = '';
+
+            // Show statistics
+            if (isImage) {
+                detectionStats.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-number">${data.total_detections}</div>
+                        <div class="stat-label">Total Detections</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${data.detections ? data.detections.length : 0}</div>
+                        <div class="stat-label">Objects Found</div>
+                    </div>
+                `;
+            } else {
+                detectionStats.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-number">${data.total_detections}</div>
+                        <div class="stat-label">Total Detections</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${data.total_frames}</div>
+                        <div class="stat-label">Frames Processed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${Math.round(data.duration)}s</div>
+                        <div class="stat-label">Video Duration</div>
+                    </div>
+                `;
+            }
+
+            // Show detections
+            if (data.detections && data.detections.length > 0) {
+                data.detections.forEach(detection => {
+                    const detectionDiv = document.createElement('div');
+                    detectionDiv.className = `detection-item ${detection.class === 'weapon' ? 'weapon' : ''}`;
+                    detectionDiv.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>${detection.class.charAt(0).toUpperCase() + detection.class.slice(1)}</strong>
+                                <div class="text-muted">Confidence: ${(detection.confidence * 100).toFixed(1)}%</div>
+                            </div>
+                            <div class="text-end">
+                                <i class="fas fa-${detection.class === 'weapon' ? 'gun' : 'utensils'} fa-lg"></i>
+                            </div>
+                        </div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" style="width: ${detection.confidence * 100}%"></div>
+                        </div>
+                    `;
+                    detectionsList.appendChild(detectionDiv);
+                });
+            } else {
+                detectionsList.innerHTML = `
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        No weapons or knives detected in this ${isImage ? 'image' : 'video'}.
+                    </div>
+                `;
+            }
+
+            // Show media
+            if (isImage && data.result_image) {
+                mediaContainer.innerHTML = `
+                    <h5 class="mb-3">Processed Image</h5>
+                    <img src="${data.result_image}" alt="Detection Result" class="img-fluid">
+                `;
+            } else if (!isImage && data.result_video) {
+                mediaContainer.innerHTML = `
+                    <h5 class="mb-3">Processed Video</h5>
+                    <video controls class="img-fluid">
+                        <source src="${data.result_video}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                `;
+            }
+
+            // Show results container
+            resultContainer.style.display = 'block';
+            resultContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Check system health on load
+        window.addEventListener('load', () => {
+            fetch('/health')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.model === 'loaded') {
+                        showAlert('System ready! Model loaded successfully.', 'success');
+                    } else {
+                        showAlert('Warning: Model not found. Some features may not work.', 'warning');
+                    }
+                })
+                .catch(error => {
+                    console.error('Health check failed:', error);
+                });
+        });
+    </script>
+</body>
+</html> 
