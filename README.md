@@ -1,53 +1,163 @@
-# Weapon and Knievs Detection System
+# 🚀 Weapons and Knife Detection System - Setup Guide
 
-This repository contains the source code and resources related to the academic weapon detection project, developed as part of research in the area of ​​computer security.
+## Quick Start
 
-## Overview
+### 1. Environment Setup
 
-The main objective of this project is to design and implement an advanced system for the autonomous detection of firearms and knives. Using the YOLOv8 (You Only Look Once) framework and transfer learning techniques, we seek to improve security effectiveness through continuous, real-time surveillance.
+```bash
+# Navigate to your project directory
+cd "C:\Users\Vishal Kandakatla\PycharmProjects\weapons-and-knife-detection-system"
 
-## Key Features
+# Create and activate virtual environment
+python -m venv venv
+venv\Scripts\activate
 
-- **YOLOv8 Framework:** One implementation uses YOLOv8, known for its efficiency in real-time object detection.
-  
-- **Transfer Learning:** Transfer learning techniques are employed to adapt the model to a specific context and improve accuracy in weapon detection.
-
-- **Integration with IP Cameras:** The system is designed for easy integration with IP cameras, allowing for real-time surveillance and immediate notifications.
-
-
-## Dataset
-
-https://universe.roboflow.com/joao-assalim-xmovq/weapon-2/dataset/2
-
-## How to use
-
-1. **Repository Cloning:**
-
-```
-git clone https://github.com/JoaoAssalim/Weapons-and-Knives-Detector-with-YOLOv8.git
-```
-
-2. **Installation of dependencies:**
-
-```
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-3. **System Execution:**
+### 2. Test the System
 
+```bash
+# Run the test script to verify everything works
+python test_detection.py
 ```
+
+### 3. Run the Main Application
+
+```bash
+# Run the interactive detection system
 python detecting-images.py
 ```
 
+## 📋 Requirements
 
-## Contributions and Problems
+- **Python 3.7+**
+- **OpenCV** (for image/video processing)
+- **Ultralytics** (YOLOv8 framework)
+- **NumPy** (numerical computations)
+- **PyWavelets** (wavelet transforms)
+- **Matplotlib** (plotting)
+- **Pandas** (data manipulation)
 
-Contributions are welcome! If you encounter issues or have suggestions for improvement, please open an issue in this repository.
+## 🎯 Available Models
 
-## Academic Notes
+The project includes several trained models with different preprocessing techniques:
 
-This project is part of academic research in the area of ​​computer security. The results obtained and performance analyzes are documented in detail in the scientific article that will be made available in the future.
+- **Normal_Compressed**: Standard model (currently used)
+- **Haar**: Haar wavelet preprocessing
+- **Symlet**: Symlet wavelet preprocessing
+- **Db**: Daubechies wavelet preprocessing
+- **Normal**: Standard preprocessing
 
-## License
+## 🔧 Usage Options
 
-This project is distributed under the [MIT] license (LICENSE.md). See the LICENSE.md file for details.
+### Option 1: Quick Test
+```bash
+python test_detection.py
+```
+- Uses the existing test image in `Results/teste.jpg`
+- Displays results in a window
+- Saves output to `Results/test_result.jpg`
+
+### Option 2: Interactive Mode
+```bash
+python detecting-images.py
+```
+- Choose from 4 options:
+  1. **Image Detection**: Process any image file
+  2. **Video Detection**: Process video files
+  3. **Real-time Display**: Show results in window
+  4. **Exit**: Close the application
+
+### Option 3: Direct Function Calls
+You can also import and use the functions directly:
+
+```python
+from detecting_images import detect_objects_in_photo, detect_objects_in_video
+
+# Detect in image
+result_path = detect_objects_in_photo("path/to/your/image.jpg")
+
+# Detect in video
+result_path = detect_objects_in_video("path/to/your/video.mp4")
+```
+
+## 📁 Project Structure
+
+```
+weapons-and-knife-detection-system/
+├── detecting-images.py      # Main detection script
+├── test_detection.py        # Test script
+├── preprocessing-images.py  # Image preprocessing utilities
+├── requirements.txt         # Python dependencies
+├── models/                  # ONNX model files
+├── runs/detect/            # Trained YOLO models
+│   ├── Normal_Compressed/
+│   ├── Haar/
+│   ├── Symlet/
+│   └── ...
+└── Results/                # Output files
+    ├── teste.jpg           # Test image
+    └── detected_objects_video.mp4
+```
+
+## 🐛 Troubleshooting
+
+### Common Issues:
+
+1. **Model not found error**:
+   - Ensure the model file exists at `./runs/detect/Normal_Compressed/weights/best.pt`
+   - Check if the training was completed successfully
+
+2. **OpenCV installation issues**:
+   ```bash
+   pip uninstall opencv-python opencv-contrib-python
+   pip install opencv-contrib-python
+   ```
+
+3. **CUDA/GPU issues**:
+   - The system works on CPU by default
+   - For GPU acceleration, ensure CUDA is properly installed
+
+4. **Memory issues**:
+   - Reduce image/video resolution
+   - Process smaller batches
+
+## 🎨 Customization
+
+### Changing the Model
+To use a different trained model, modify the model path in the scripts:
+
+```python
+# Instead of:
+yolo_model = YOLO('./runs/detect/Normal_Compressed/weights/best.pt')
+
+# Use:
+yolo_model = YOLO('./runs/detect/Haar/weights/best.pt')  # Haar model
+yolo_model = YOLO('./runs/detect/Symlet/weights/best.pt')  # Symlet model
+```
+
+### Adjusting Detection Threshold
+Change the confidence threshold (currently 0.5):
+
+```python
+if conf[pos] >= 0.5:  # Change 0.5 to your desired threshold
+```
+
+## 📊 Performance Notes
+
+- **Detection Speed**: Varies based on image size and hardware
+- **Accuracy**: Models are trained on weapon detection datasets
+- **Supported Formats**: JPG, PNG, MP4, AVI, etc.
+- **Output**: Bounding boxes with confidence scores
+
+## 🔗 Additional Resources
+
+- **Dataset**: https://universe.roboflow.com/joao-assalim-xmovq/weapon-2/dataset/2
+- **YOLOv8 Documentation**: https://docs.ultralytics.com/
+- **OpenCV Documentation**: https://docs.opencv.org/
+
+## 📝 License
+
+This project is distributed under the MIT license. See LICENSE file for details. 
