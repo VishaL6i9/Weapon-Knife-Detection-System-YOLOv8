@@ -6,3 +6,6 @@ numpy
 PyWavelets
 matplotlib
 pandas
+flask
+werkzeug
+requests
