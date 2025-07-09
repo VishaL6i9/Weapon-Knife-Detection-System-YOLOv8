@@ -6,7 +6,7 @@
 
 ```bash
 # Navigate to your project directory
-cd "C:\Users\Vishal Kandakatla\PycharmProjects\weapons-and-knife-detection-system"
+cd "weapons-and-knife-detection-system"
 
 # Create and activate virtual environment
 python -m venv venv
@@ -154,8 +154,8 @@ if conf[pos] >= 0.5:  # Change 0.5 to your desired threshold
 
 ## 🔗 Additional Resources
 
-- **Dataset**: https://universe.roboflow.com/joao-assalim-xmovq/weapon-2/dataset/2
-- **YOLOv8 Documentation**: https://docs.ultralytics.com/
+- **Dataset**: https://www.kaggle.com/datasets/jubaerad/weapons-in-images-segmented-videos
+- **YOLOv11 Documentation**: https://docs.ultralytics.com/
 - **OpenCV Documentation**: https://docs.opencv.org/
 
 ## 📝 License
