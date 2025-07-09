@@ -40,7 +40,7 @@ def load_model():
     """Load the YOLO model"""
     global model
     if model is None:
-        model_path = './runs/detect/Normal_Compressed/weights/best.pt'
+        model_path = './runs/detect/yolov11_weapons_training_colab/weights/best.pt'
         if os.path.exists(model_path):
             model = YOLO(model_path)
             print("✅ Model loaded successfully!")
