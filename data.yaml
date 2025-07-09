@@ -1,0 +1,16 @@
+# data.yaml
+# This file should be placed in your_project_root
+
+# Path to the dataset root directory (relative to this data.yaml file)
+path: .
+
+# Train and validation image paths (these are relative to the 'path' defined above)
+train: images/train
+val: images/val
+
+# Number of classes in your dataset
+nc: 1
+
+# List of class names, in order of their integer IDs.
+# Since your .txt files have '0' as the class ID, 'weapon' will be class 0.
+names: ['weapon']
